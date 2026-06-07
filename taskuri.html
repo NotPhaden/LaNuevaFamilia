@@ -1,18 +1,16 @@
+<!DOCTYPE html>
+<html lang="ro">
 
 <head>
-        <link rel="icon" type="image/png" href="logo.png">
+    <link rel="icon" type="image/png" href="logo.png">
 
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task-uri - La Nueva Familia</title>
 
-<title>Task-uri - La Nueva Familia</title>
-
-<link rel="stylesheet" href="style.css">
-
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
-<link rel="stylesheet"
-href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
 <style>
 
@@ -46,10 +44,6 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
     border-color:rgba(139,92,246,.4);
 }
 
-.task-select{
-    appearance:none;
-}
-
 .task-select option{
     background:#181825;
     color:white;
@@ -66,11 +60,9 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
     border-radius:18px;
     cursor:pointer;
     margin-top:15px;
-
     color:white;
     font-size:15px;
     font-weight:600;
-
     background:linear-gradient(135deg,#8b5cf6,#a855f7);
 }
 
@@ -158,11 +150,7 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
 <a href="locatii.html"><i class="fa-solid fa-location-dot"></i> Locații</a>
 <a href="infocraft.html"><i class="fa-solid fa-circle-info"></i> Info-Craft</a>
 <a href="craftarme.html"><i class="fa-solid fa-hammer"></i> Craft Arme</a>
-
-<a href="taskuri.html" class="active">
-<i class="fa-solid fa-list-check"></i> Task-uri
-</a>
-
+<a href="taskuri.html" class="active"><i class="fa-solid fa-list-check"></i> Task-uri</a>
 <a href="livrari.html"><i class="fa-solid fa-truck"></i> Livrări</a>
 <a href="fonduri.html"><i class="fa-solid fa-money-bill-wave"></i> Fonduri</a>
 <a href="telefon.html"><i class="fa-solid fa-phone"></i> Nr Tel</a>
@@ -184,24 +172,20 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
 <input id="taskName" class="task-input" placeholder="Ce task dai?">
 
 <select id="taskRole" class="task-input task-select">
-
 <option value="">Cui i-ai dat task-ul</option>
 <option value="Lider">Lider</option>
 <option value="Co-Lider">Co-Lider</option>
 <option value="Coordonator">Coordonator</option>
-
 </select>
 
 <input id="taskDesc" class="task-input" placeholder="Descriere task">
 
 </div>
 
-<!-- DOVADĂ -->
 <div class="file-box">
 
 <input type="text" id="taskLink" class="task-input" placeholder="Link dovadă (opțional)">
-
-<input type="file" id="taskFile" class="task-input" accept="image/*" style="padding:12px; margin-top:10px;">
+<input type="file" id="taskFile" class="task-input" accept="image/*" style="margin-top:10px;padding:12px;">
 
 </div>
 
@@ -211,7 +195,6 @@ Trimite Task
 
 </div>
 
-<!-- MEMBERS -->
 <div style="margin-top:30px;">
 <h2 style="margin-bottom:20px;">Membri Task-uri</h2>
 <div class="members-grid" id="memberList"></div>
@@ -238,132 +221,133 @@ Trimite Task
 
 <script>
 
+if (!localStorage.getItem("lnf_current_user")) {
+    window.location.href = "index.html";
+}
+
 function convertBase64(file){
-return new Promise(resolve=>{
-const reader = new FileReader();
-reader.readAsDataURL(file);
-reader.onload = ()=> resolve(reader.result);
-});
+    return new Promise(resolve=>{
+        const reader = new FileReader();
+        reader.onload = ()=> resolve(reader.result);
+        reader.readAsDataURL(file);
+    });
 }
 
 async function addTask(){
 
-const currentUser =
-localStorage.getItem("lnf_current_user");
+    const currentUser = localStorage.getItem("lnf_current_user");
 
-const name = document.getElementById("taskName").value.trim();
-const role = document.getElementById("taskRole").value;
-const desc = document.getElementById("taskDesc").value.trim();
-const link = document.getElementById("taskLink").value.trim();
-const file = document.getElementById("taskFile").files[0];
+    const name = document.getElementById("taskName").value.trim();
+    const role = document.getElementById("taskRole").value;
+    const desc = document.getElementById("taskDesc").value.trim();
+    const link = document.getElementById("taskLink").value.trim();
+    const file = document.getElementById("taskFile").files[0];
 
-if(!name || !role || !desc){
-alert("Completează câmpurile!");
-return;
-}
+    if(!name || !role || !desc){
+        alert("Completează câmpurile!");
+        return;
+    }
 
-let dovada = link;
+    let dovada = link;
 
-if(file){
-dovada = await convertBase64(file);
-}
+    if(file){
+        dovada = await convertBase64(file);
+    }
 
-let tasks = JSON.parse(localStorage.getItem("lnf_tasks")) || [];
+    let tasks = JSON.parse(localStorage.getItem("lnf_tasks") || "[]");
 
-tasks.push({
-user: currentUser,
-name,
-role,
-desc,
-dovada,
-data: new Date().toLocaleString("ro-RO")
-});
+    tasks.push({
+        user: currentUser,
+        name,
+        role,
+        desc,
+        dovada,
+        data: new Date().toLocaleString("ro-RO")
+    });
 
-localStorage.setItem("lnf_tasks", JSON.stringify(tasks));
+    localStorage.setItem("lnf_tasks", JSON.stringify(tasks));
 
-document.getElementById("taskName").value = "";
-document.getElementById("taskRole").value = "";
-document.getElementById("taskDesc").value = "";
-document.getElementById("taskLink").value = "";
-document.getElementById("taskFile").value = "";
+    document.getElementById("taskName").value = "";
+    document.getElementById("taskRole").value = "";
+    document.getElementById("taskDesc").value = "";
+    document.getElementById("taskLink").value = "";
+    document.getElementById("taskFile").value = "";
 
-loadMembers();
-alert("Task trimis!");
+    loadMembers();
+    alert("Task trimis!");
 }
 
 function loadMembers(){
 
-const tasks = JSON.parse(localStorage.getItem("lnf_tasks")) || [];
-const users = JSON.parse(localStorage.getItem("lnf_users")) || [];
+    const tasks = JSON.parse(localStorage.getItem("lnf_tasks") || "[]");
+    const users = JSON.parse(localStorage.getItem("lnf_users") || "[]");
 
-const unique = [...new Set(tasks.map(x=>x.user))];
+    const unique = [...new Set(tasks.map(x=>x.user))];
 
-const container = document.getElementById("memberList");
-container.innerHTML = "";
+    const container = document.getElementById("memberList");
+    container.innerHTML = "";
 
-unique.forEach(username=>{
+    unique.forEach(username=>{
 
-const user = users.find(u=>u.username===username);
-const avatar = user?.avatar || "https://i.imgur.com/zYxDCQT.png";
+        const user = users.find(u=>u.username===username);
+        const avatar = user?.avatar || "https://i.imgur.com/zYxDCQT.png";
 
-container.innerHTML += `
-<div class="member-card glass task-member">
+        container.innerHTML += `
+        <div class="member-card glass task-member">
 
-<img src="${avatar}" class="member-avatar" onclick="viewHistory('${username}')">
+            <img src="${avatar}" class="member-avatar" onclick="viewHistory('${username}')">
 
-<h2>${username}</h2>
+            <h2>${username}</h2>
 
-<button class="view-btn" onclick="viewHistory('${username}')">
-👁️ Task-uri
-</button>
+            <button class="view-btn" onclick="viewHistory('${username}')">
+                👁️ Task-uri
+            </button>
 
-</div>
-`;
-
-});
+        </div>`;
+    });
 }
 
 function viewHistory(user){
 
-document.getElementById("historyModal").style.display="flex";
-document.getElementById("memberTitle").innerText="Task-uri - "+user;
+    document.getElementById("historyModal").style.display="flex";
+    document.getElementById("memberTitle").innerText="Task-uri - "+user;
 
-const history=document.getElementById("historyContent");
-history.innerHTML="";
+    const history=document.getElementById("historyContent");
+    history.innerHTML="";
 
-const tasks = JSON.parse(localStorage.getItem("lnf_tasks")) || [];
+    const tasks = JSON.parse(localStorage.getItem("lnf_tasks") || "[]");
 
-tasks.filter(x=>x.user===user)
-.reverse()
-.forEach(item=>{
+    tasks.filter(x=>x.user===user)
+    .reverse()
+    .forEach(item=>{
 
-history.innerHTML+=`
-<div class="glass task-history-card">
+        history.innerHTML+=`
+        <div class="glass task-history-card">
 
-<h3>👤 ${item.user}</h3>
+            <h3>👤 ${item.user}</h3>
 
-<p>
-<b>Task:</b> ${item.name}<br><br>
-<b>Rol:</b> ${item.role}<br><br>
-<b>Descriere:</b> ${item.desc}<br><br>
-<b>Data:</b> ${item.data}
-</p>
+            <p>
+                <b>Task:</b> ${item.name}<br><br>
+                <b>Rol:</b> ${item.role}<br><br>
+                <b>Descriere:</b> ${item.desc}<br><br>
+                <b>Data:</b> ${item.data}
+            </p>
 
-${item.dovada ? `<img src="${item.dovada}">` : ""}
+            ${item.dovada ? `<img src="${item.dovada}">` : ""}
 
-</div>
-`;
-
-});
-
+        </div>`;
+    });
 }
 
 function closeModal(){
-document.getElementById("historyModal").style.display="none";
+    document.getElementById("historyModal").style.display="none";
 }
 
 loadMembers();
 
+setInterval(loadMembers, 3000);
+
 </script>
 
 </body>
+</html>
