@@ -540,11 +540,9 @@ window.addEventListener(
 
 
 setInterval(() => {
-
     heartbeat();
     cleanupOfflineUsers();
-    loadPanel();
-
+    refreshGlobalUI();
 }, 3000);
 
 
@@ -565,3 +563,24 @@ window.addEventListener(
     }, 100);
 
 });
+function refreshGlobalUI() {
+    loadPanel();
+
+    if (typeof loadMembersPage === "function")
+        loadMembersPage();
+
+    if (typeof loadTasksPage === "function")
+        loadTasksPage();
+
+    if (typeof loadPhonePage === "function")
+        loadPhonePage();
+
+    if (typeof loadLivrariPage === "function")
+        loadLivrariPage();
+
+    if (typeof loadTaxaPage === "function")
+        loadTaxaPage();
+
+    if (typeof loadDonatiiPage === "function")
+        loadDonatiiPage();
+}
